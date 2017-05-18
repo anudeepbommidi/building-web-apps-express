@@ -1,5 +1,4 @@
-/bower_components/
+/library/bower_components/*
+/library/node_modules/*
 
-/node_modules/
-
-/nodejs-express-web-applications
+/nodejs-express-web-applications/*
