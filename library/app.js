@@ -1,5 +1,8 @@
 var express = require('express'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    passport = require('passport'),
+    session = require('express-session');
 
 var app = express();
 
@@ -15,11 +18,16 @@ var nav = [{
 
 var bookRouter = require('./src/routes/book.router')(nav);
 var adminRouter = require('./src/routes/admin.router')(nav);
-var authRouter = require('./src/routes/auth.router');
+var authRouter = require('./src/routes/auth.router')(nav);
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
+app.use(session({secret: 'mysecret-library', resave: true, saveUninitialized: true}));
+
+require('./src/config/passport')(app);
+
 
 app.set('views', './src/views');
 app.set('view engine', 'ejs');

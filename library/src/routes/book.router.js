@@ -6,6 +6,13 @@ var express = require('express'),
 
 module.exports = function (nav) {
 
+    bookRouter.use(function (req, res, next) {
+        if (!req.user) {
+            res.redirect('/');
+        }
+        next();
+    });
+
 
     bookRouter.route('/')
         .get(function (req, res) {
@@ -21,11 +28,9 @@ module.exports = function (nav) {
                             nav: nav,
                             books: books
                         });
-                });
-
+                    });
             });
 
-            
         });
 
     bookRouter.route('/:bookId')
@@ -35,18 +40,20 @@ module.exports = function (nav) {
             mongodb.connect(url, function (err, db) {
                 var collection = db.collection('books');
 
-                collection.findOne({_id: id},
+                collection.findOne({
+                        _id: id
+                    },
                     function (err, book) {
                         res.render('book', {
                             title: 'Book',
                             nav: nav,
                             book: book
                         });
-                });
+                    });
 
             });
 
-            
+
         });
 
     return bookRouter;
